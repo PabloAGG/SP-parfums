@@ -3,39 +3,366 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const app = express();
-const port = process.env.PORT || 3001; // Usamos 3001 para no chocar con React
+const port = process.env.PORT || 3001;
 
-// 2. Configuración del Pool de Conexión a la Base de Datos
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
-        rejectUnauthorized: false // Requerido para conexiones remotas a Supabase
+        rejectUnauthorized: false
     }
 });
 
+app.use(cors());
+app.use(express.json());
 
-app.use(cors()); // Habilita la comunicación entre dominios
-app.use(express.json()); // Permite al servidor entender JSON
+// --- MIDDLEWARE DE AUTENTICACIÓN ---
+const verificarToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) return res.status(403).json({ error: 'Token requerido' });
+    
+    const token = authHeader.split(' ')[1];
+    if (!token) return res.status(403).json({ error: 'Token malformado' });
 
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) return res.status(401).json({ error: 'Token no válido o expirado' });
+        req.user = decoded;
+        next();
+    });
+};
+
+const esAdmin = (req, res, next) => {
+    if (req.user && req.user.admin) {
+        next();
+    } else {
+        res.status(403).json({ error: 'Acceso denegado. Se requiere rol de administrador.' });
+    }
+};
 // 4. Rutas (los "endpoints" de nuestra API)
 app.get('/', (req, res) => {
     res.send('¡API del Catálogo funcionando!');
 });
 
-// Ruta para obtener todos los productos
+// Ruta para obtener todos los perfumes
 app.get('/api/perfume', async (req, res) => {
     try {
         console.log("Petición recibida en /api/perfume");
-        const { rows } = await pool.query('SELECT m.nombre as marcaP,p.* FROM perfume join marca m on p.marca = m.idmarca');
+        const query = `
+            SELECT p.*, m.nombre AS marcaP
+            FROM perfume AS p
+            INNER JOIN marcas AS m ON p.marca = m.idmarca
+            WHERE p.activo = true
+        `;
+        const { rows } = await pool.query(query);
         res.json(rows);
-        console.log("Productos obtenidos:", rows);
     } catch (error) {
-        console.error('Error al obtener productos:', error);
+        console.error('Error al obtener perfumes:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
+
+app.get('/api/perfume/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        console.log(`Petición recibida para obtener el perfume con ID: ${id}`);
+        const query = `
+            SELECT p.*, m.nombre AS marcaP
+            FROM perfume AS p
+            INNER JOIN marcas AS m ON p.marca = m.idmarca
+            WHERE p.idperfume = $1
+        `;
+        const { rows } = await pool.query(query, [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'perfume no encontrado' });
+        }
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Error al obtener el perfume:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+app.get('/api/perfume/genero/:genero', async (req, res) => {
+    const { genero } = req.params;
+    try {
+        console.log(`Petición recibida para obtener perfumes de género: ${genero}`);
+        const query = `
+            SELECT p.*, m.nombre AS marcaP
+            FROM perfume AS p
+            INNER JOIN marcas AS m ON p.marca = m.idmarca
+            WHERE p.genero = $1 AND p.activo = true
+        `;
+        const { rows } = await pool.query(query, [genero]);
+        res.json(rows); // Se devuelve un array vacío si no hay resultados, no un error 404
+    } catch (error) {
+        console.error('Error al obtener perfumes por género:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+app.get('/api/perfume/marca/:marca', async (req, res) => {
+    const { marca } = req.params;
+    try {
+        console.log(`Petición recibida para obtener perfumes de la marca: ${marca}`);
+        const query = `
+            SELECT p.*, m.nombre AS marcaP
+            FROM perfume AS p
+            INNER JOIN marcas AS m ON p.marca = m.idmarca
+            WHERE m.nombre = $1 AND p.activo = true
+        `;
+        const { rows } = await pool.query(query, [marca]);
+        res.json(rows); // Se devuelve un array vacío si no hay resultados, no un error 404
+    } catch (error) {
+        console.error('Error al obtener perfumes por marca:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+app.post('/api/perfume', async (req, res) => {
+    const { nombre, marca, top, descripcion,clima,genero } = req.body;
+    try {
+        console.log("Petición recibida para crear un nuevo perfume");
+        const { rows } = await pool.query(
+            'INSERT INTO perfume (nombre, marca, top, descripcion,clima,genero) VALUES ($1, $2, $3, $4,$5,$6) RETURNING *',
+            [nombre, marca, top, descripcion,clima,genero]
+        );
+        res.status(201).json(rows[0]);
+    } catch (error) {
+        console.error('Error al crear el perfume:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+app.put('/api/perfume/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nombre, marca, top, descripcion,clima,genero} = req.body;
+    try {
+        console.log(`Petición recibida para actualizar el perfume con ID: ${id}`);
+        const { rows } = await pool.query(
+            'UPDATE perfume SET nombre = $1, marca = $2, top = $3, descripcion = $4,clima=$5,genero=$6 WHERE idperfume = $7 RETURNING *',
+            [nombre, marca, top, descripcion,clima,genero, id]
+        );
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'perfume no encontrado' });
+        }
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Error al actualizar el perfume:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+app.delete('/api/perfume/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        console.log(`Petición recibida para eliminar el perfume con ID: ${id}`);
+        const { rowCount } = await pool.query('UPDATE perfume SET activo=false WHERE idperfume = $1', [id]);
+        if (rowCount === 0) {
+            return res.status(404).json({ error: 'perfume no encontrado' });
+        }
+        res.status(204).send(); // No content
+    } catch (error) {
+        console.error('Error al eliminar el perfume:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+// api registro y login
+app.post('/api/auth/register', async (req, res) => {
+    const bcrypt = require('bcrypt');
+const saltRounds = 10;
+    const { nombre, apellidos,telefono,contraseña} = req.body;
+    const hashedPassword = await bcrypt.hash(contraseña, saltRounds);
+    try {
+        console.log("Petición recibida para registrar un nuevo usuario");
+        const { rows } = await pool.query(
+            'INSERT INTO usuarios (nombre, apellidos, telefono,contraseña) VALUES ($1, $2, $3) RETURNING *',
+            [nombre, apellidos,telefono,hashedPassword]
+        );
+        res.status(201).json(rows[0]);
+    } catch (error) {
+        console.error('Error al registrar el usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+    const { telefono, contraseña } = req.body;
+    try {
+        // 1. Buscamos al usuario solo por su teléfono (que debe ser único)
+        const { rows } = await pool.query(
+            'SELECT * FROM usuarios WHERE telefono = $1',
+            [telefono]
+        );
+
+        if (rows.length === 0) {
+            // No revelamos si el usuario existe o no, es más seguro.
+            return res.status(401).json({ error: 'Credenciales inválidas' });
+        }
+
+        const usuario = rows[0];
+
+        // 2. Comparamos la contraseña enviada con el hash guardado en la BD
+        const esValida = await bcrypt.compare(contraseña, usuario.contraseña);
+
+        if (!esValida) {
+            return res.status(401).json({ error: 'Credenciales inválidas' });
+        }
+
+        // 3. Si la contraseña es válida, generamos el token
+        // (Aquí corregimos el segundo error)
+        const token = jwt.sign(
+            { userId: usuario.idusuario, admin: usuario.admin }, // Payload: info útil del usuario
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        // Enviamos UNA SOLA respuesta con el token y los datos del usuario (sin la contraseña)
+        res.json({
+            token,
+            user: {
+                id: usuario.idusuario,
+                nombre: usuario.nombre,
+                apellidos: usuario.apellidos,
+                telefono: usuario.telefono,
+                admin: usuario.admin
+            }
+        });
+
+    } catch (error) {
+        console.error('Error al iniciar sesión:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+app.get('/api/pedidos/mis-pedidos', async (req, res) => {
+    const { userId } = req.query; // Asumiendo que el ID del usuario se pasa como parámetro de consulta
+    try {
+        console.log(`Petición recibida para obtener los pedidos del usuario con ID: ${userId}`);
+        const { rows } = await pool.query('SELECT * FROM pedidos WHERE usuario_id = $1 AND estado!="cancelado" ', [userId]);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron pedidos para este usuario' });
+        }
+        res.json(rows);
+    } catch (error) {
+        console.error('Error al obtener los pedidos:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+app.post('/api/pedidos', async (req, res) => {
+    const { usuario_id, idperfume, cantidad } = req.body; // Asegúrate de que el cuerpo de la solicitud tenga estos campos
+    try {
+        console.log("Petición recibida para crear un nuevo pedido");
+        const { rows } = await pool.query(
+            'INSERT INTO pedidos (idusuario, idperfume, cantidad, estado) VALUES ($1, $2, $3,"pendiente") RETURNING *',
+            [usuario_id, idperfume, cantidad]
+        );
+        res.status(201).json(rows[0]);
+    } catch (error) {
+        console.error('Error al crear el pedido:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+app.put('/api/pedidos/:id', async (req, res) => {
+    const { id } = req.params;
+    const { estado,cantidad } = req.body; // Asegúrate de que el cuerpo de la solicitud tenga el campo 'estado'
+    try {
+        console.log(`Petición recibida para actualizar el pedido con ID: ${id}`);
+        const { rows } = await pool.query(
+            'UPDATE pedidos SET estado = $1, cantidad=$2 WHERE idpedido = $3 RETURNING *',
+            [estado, cantidad, id]
+        );
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Pedido no encontrado' });
+        }
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Error al actualizar el pedido:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+// pedidos admin
+app.get('/api/pedidos/admin/todos-pedidos', async (req, res) => {
+    try {
+        console.log("Petición recibida para obtener todos los pedidos");
+        const { rows } = await pool.query(`
+    SELECT
+        p.idpedido,
+        u.nombre AS nombre_usuario,
+        u.apellidos AS apellidos_usuario,
+        perf.nombre AS nombre_perfume,
+        p.cantidad,
+        p.estado
+    FROM
+        pedidos AS p
+    INNER JOIN
+        usuarios AS u ON p.idusuario = u.idusuario
+    INNER JOIN
+        perfume AS perf ON p.idperfume = perf.idperfume
+    WHERE
+        p.estado = 'confirmado'
+`);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron pedidos' });
+        }
+        res.json(rows);
+    } catch (error) {
+        console.error('Error al obtener los pedidos:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+app.get('/api/pedidos/admin/todos', async (req, res) => {
+    try {
+        console.log("Petición recibida para obtener todos los pedidos");
+        const { rows } = await pool.query(`
+  SELECT
+        p.idpedido,
+        u.nombre AS nombre_usuario,
+        u.apellidos AS apellidos_usuario,
+        perf.nombre AS nombre_perfume,
+        p.cantidad,
+        p.estado
+    FROM
+        pedidos AS p
+    INNER JOIN
+        usuarios AS u ON p.idusuario = u.idusuario
+    INNER JOIN
+        perfume AS perf ON p.idperfume = perf.idperfume
+    WHERE
+
+        p.estado = 'pendiente'
+`);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron pedidos' });
+        }
+        res.json(rows);
+    } catch (error) {
+        console.error('Error al obtener los pedidos:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+app.put('/api/pedidos/admin/confirmar/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        console.log(`Petición recibida para confirmar el pedido con ID: ${id}`);
+        const { rows } = await pool.query(
+            'UPDATE pedidos SET estado = "confirmado" WHERE idpedido = $1 RETURNING *',
+            [id]
+        );
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Pedido no encontrado' });
+        }
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Error al confirmar el pedido:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
 
 // 5. Iniciar el servidor
 app.listen(port, () => {

@@ -47,7 +47,7 @@ function App() {
                     <div key={perfume.id} className="perfume-card">
                         <h2>{perfume.nombre}</h2>
                         <p>{perfume.marcaP}</p>
-                        <p>descripcion:{perfume.description}</p>
+                        <p>descripcion:{perfume.descripcion}</p>
                         <p>climas:{perfume.clima}</p>
                         <p></p>
                     </div>
