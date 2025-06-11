@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'; // Hook para leer los parámetros de la URL
 import './PerfumeDetail.css';
 
+import Loading from '../componentes/loading'; // Componente de carga
 const PerfumeDetail = () => {
     // useParams nos da un objeto con los parámetros, en este caso { id: '...' }
     const { id } = useParams(); 
@@ -35,7 +36,7 @@ const capitalizarPrimeraPalabraExacto = (texto) => {
         fetchPerfume();
     }, [id]); // Se ejecuta cada vez que el 'id' de la URL cambie
 
-    if (loading) return <p>Cargando...</p>;
+    if (loading) return <Loading />; // Muestra el componente de carga mientras se obtienen los datos
     if (error) return <p>Error: {error}</p>;
     if (!perfume) return <p>No se encontró el perfume.</p>;
 

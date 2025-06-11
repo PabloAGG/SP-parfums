@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import PerfumeCard from '../componentes/PerfumeCard';
 import './Dashboard.css'; // Archivo para estilos del dashboard
-
+import Loading from '../componentes/loading'; // Componente de carga
 const Dashboard = () => {
     // Estado para guardar los perfumes agrupados por marca
     const [perfumesPorMarca, setPerfumesPorMarca] = useState({});
@@ -13,7 +13,7 @@ const [loading, setLoading] = useState(true);
             try {
                 // La URL de tu backend
                 setLoading(true);
-                const response = await fetch('http://localhost:3001/api/perfume');
+                const response = await fetch('http://localhost:3001/api/perfumes');
                 const data = await response.json();
 
                 // Agrupamos los perfumes por marca
@@ -38,7 +38,7 @@ const [loading, setLoading] = useState(true);
         fetchPerfumes();
     }, []); // El array vacío asegura que esto se ejecute solo una vez
 
-    if (loading) return <p>Cargando perfumes...</p>;
+    if (loading) return <Loading />; // Muestra el componente de carga mientras se obtienen los datos
     if (Object.keys(perfumesPorMarca).length === 0) {
         return <p>No hay perfumes disponibles.</p>;
     }

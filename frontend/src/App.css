@@ -1,30 +1,36 @@
-/* 
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
+:root {
+  font-family: system-ui, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+  color-scheme: light dark;
+  color: rgba(0, 0, 0, 0.87);
+  background-color: #f7f7f7;
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-
-.card {
-  padding: 2em;
+#root {
+display: grid;
+  grid-template-rows: auto 1fr auto;
+ min-height: 100%;
+  width: 100vw;
+  padding: 0;
+  top: 0;
+  left: 0;
+  background-color: #fdfdfd;
 }
-
-.read-the-docs {
-  color: #888;
-} */
