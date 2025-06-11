@@ -1,60 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import './App.css'; // Vite ya incluye este archivo para estilos
+import { Routes, Route } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
+import PerfumeDetail from './pages/PerfumeDetail';
+import './App.css';
+import Header from './pages/header';
+import Footer from './pages/footer';
 
 function App() {
-    // 'useState' es un "Hook" de React para guardar estados (datos que cambian)
-    const [perfumes, setperfumes] = useState([]); // Inicia como un array vacío
-    const [loading, setLoading] = useState(true); // Para mostrar un mensaje de carga
-    const [error, setError] = useState(null); // Para guardar errores
+  return (
+    <>
+      {/* Aquí ira un Navbar que se vera en todas las páginas */}
+        <Header />
+        
+        {/* Aquí ira el contenido principal de la aplicación */}
+      <div className="main-content">
+        <Routes>
+          {/* Ruta para el Dashboard (página principal) */}
+          <Route path="/" element={<Dashboard />} />
+          
+          {/* Ruta para el detalle del perfume. :id es un parámetro dinámico. */}
+          <Route path="/perfume/:id" element={<PerfumeDetail />} />
+        </Routes>
+      </div>
 
-    // La URL de tu API del backend
-    const API_URL = "http://localhost:3001";
-
-    // 'useEffect' es un Hook que ejecuta código cuando el componente se "monta" (carga)
-    useEffect(() => {
-        // Definimos una función asíncrona para obtener los datos
-        const fetchperfumes = async () => {
-            try {
-      const response = await fetch('http://localhost:3001/api/perfume');
-                if (!response.ok) {
-                    throw new Error('La respuesta de la red no fue correcta');
-                }
-                const data = await response.json();
-                setperfumes(data); // Guardamos los perfumeos en el estado
-            } catch (err) {
-                setError(err.message); // Guardamos el error
-            } finally {
-                setLoading(false); // Dejamos de cargar, ya sea con éxito o error
-            }
-        };
-
-        fetchperfumes(); // Ejecutamos la función
-    }, []); // El array vacío [] asegura que esto se ejecute solo una vez
-
-    // Lógica de renderizado
-    if (loading) return <div>Cargando perfumeos...</div>;
-    if (error) return <div>Error: {error}</div>;
-
-    return (
-        <div className="App">
-            <header className="App-header">
-                <h1>Nuestro Catálogo de Perfumes</h1>
-            </header>
-            <main className="perfumes-grid">
-                {perfumes.map(perfume => (
-                    // Usamos .map() para crear un elemento por cada perfumeo
-                    // La 'key' es muy importante para que React identifique cada elemento
-                    <div key={perfume.id} className="perfume-card">
-                        <h2>{perfume.nombre}</h2>
-                        <p>{perfume.marcaP}</p>
-                        <p>descripcion:{perfume.descripcion}</p>
-                        <p>climas:{perfume.clima}</p>
-                        <p></p>
-                    </div>
-                ))}
-            </main>
-        </div>
-    );
+<Footer />
+    </>
+  )
 }
 
-export default App;
+export default App

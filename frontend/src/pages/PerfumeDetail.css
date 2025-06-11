@@ -1,0 +1,63 @@
+
+.perfume-detail {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 40px;
+    gap: 40px;
+}
+
+.detail-image-container img {
+    max-width: 350px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.detail-info-container {
+    max-width: 600px;
+}
+
+.detail-name {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5em;
+    margin-top: 0;
+    margin-bottom: 5px;
+    text-transform: capitalize;
+}
+
+.detail-marca {
+    font-size: 1.5em;
+    color: #555;
+    margin-top: 0;
+    margin-bottom: 20px;
+       text-transform: capitalize;
+}
+
+.detail-description {
+    line-height: 1.6;
+    text-align: justify;
+
+}
+
+.detail-meta {
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    padding: 5px;
+    border-radius: 5px;
+       text-transform: capitalize;
+}
+
+@media (max-width: 768px) {
+    .perfume-detail {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .detail-image-container img {
+        max-width: 100%;
+    }
+
+    .detail-info-container {
+        text-align: center;
+    }
+}
+

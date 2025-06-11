@@ -1,0 +1,129 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    background-color: #eaeaea;
+    color: #1a1a1a;
+   min-height: 60px; /* Altura mínima, puede crecer si el contenido se envuelve */
+  height: auto; /* Altura automática */
+  top: 0;
+  left: 0;
+  padding: 10px 15px; /* Padding horizontal */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+}
+
+
+
+.logo {
+  height: 50px; 
+}
+
+ .nav-links {
+    display: flex;
+    position: fixed;
+    top: 0;
+    right: -100%; 
+    width: 70%;
+    height: 100vh;
+    background-color: rgba(247, 247, 247,.97);
+    flex-direction: column;
+    justify-content: center;
+    align-items: self-start;
+    gap: 2rem;
+    transition: right 0.4s ease-in-out;
+    z-index: 1000; 
+  }
+
+  /* Cuando el menú está activo, se muestra */
+  .nav-links.activo {
+    right: 0; /* Lo trae a la vista */
+  }
+
+
+  /* Animación del ícono de hamburguesa a una 'X' */
+  .hamburger.activo span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .hamburger.activo span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.activo span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+  }
+
+.nav-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+    font-size: 1.2rem;
+  padding: .5rem 3rem;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #d4af37;
+}
+
+/* Botón de hamburguesa: inicialmente oculto en escritorio */
+.hamburger {
+  display: block;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001; /* Asegura que esté por encima de otros elementos */
+}
+
+.hamburger span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  margin: 5px 0;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Estilos para pantallas pequeñas (móviles) */
+@media (max-width: 768px) {
+  .nav-links {
+    /* Oculta el menú y lo posiciona fuera de la pantalla */
+    position: fixed;
+    top: 0;
+    right: -100%; /* Empieza fuera de la vista */
+    width: 70%;
+    height: 100vh;
+    background-color: #f8f9fa;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transition: right 0.4s ease-in-out;
+  }
+
+  /* Cuando el menú está activo, se muestra */
+  .nav-links.activo {
+    right: 0; /* Lo trae a la vista */
+  }
+
+  /* Muestra el botón de hamburguesa en móviles */
+  .hamburger {
+    display: block;
+  }
+
+  /* Animación del ícono de hamburguesa a una 'X' */
+  .hamburger.activo span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .hamburger.activo span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.activo span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+  }
+}

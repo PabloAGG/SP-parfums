@@ -4,7 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -45,9 +45,26 @@ const esAdmin = (req, res, next) => {
 app.get('/', (req, res) => {
     res.send('¡API del Catálogo funcionando!');
 });
+app.get('/api/busqueda', async (req, res) => {
+    const { q } = req.query; // Obtenemos el parámetro de búsqueda
+    try {
+        console.log(`Petición recibida para buscar perfumes con el término: ${q}`);
+        const query = `
+            SELECT p.*, m.nombre AS marcaP
+            FROM perfume AS p
+            INNER JOIN marcas AS m ON p.marca = m.idmarca
+            WHERE p.activo = true AND (p.nombre ILIKE $1 OR m.nombre ILIKE $1)
+        `;
+        const { rows } = await pool.query(query, [`%${q}%`]);
+        res.json(rows);
+    } catch (error) {
+        console.error('Error al buscar perfumes:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 
 // Ruta para obtener todos los perfumes
-app.get('/api/perfume', async (req, res) => {
+app.get('/api/perfumes', async (req, res) => {
     try {
         console.log("Petición recibida en /api/perfume");
         const query = `
