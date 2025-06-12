@@ -47,6 +47,7 @@ const capitalizarPrimeraPalabraExacto = (texto) => {
            src={`../IMG/${perfume.img_path}` || 'https://via.placeholder.com/150'} 
                     alt={perfume.nombre} 
                 />
+                <img id='btMM' src='../IMG/MMbt.png' alt='Botella MariaMaria' />
             </div>
             <div className="detail-info-container">
                 <h1 className="detail-name">{perfume.nombre}</h1>

@@ -18,12 +18,15 @@ const PerfumeCard = ({ perfume }) => {
           ⭐ Alta similitud
         </div>
       )}
+      <div className='perfume-img-container'>
       <img 
         // Asumimos que tienes una columna 'imagen_url' o similar en tu tabla de perfumes
         src={`../IMG/${perfume.img_path}` || 'https://via.placeholder.com/150'} 
         alt={`Perfume ${perfume.nombre}`} 
         className="perfume-image"
       />
+       <img id='btMM' src='../IMG/MMbt.png' alt='Botella MariaMaria' />
+      </div>
          <p className='perfume-gen'>{perfume.genero}</p>
          <h3 className="perfume-name">{perfume.nombre}</h3>
   
