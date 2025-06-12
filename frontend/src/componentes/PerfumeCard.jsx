@@ -25,9 +25,10 @@ const PerfumeCard = ({ perfume }) => {
         alt={`Perfume ${perfume.nombre}`} 
         className="perfume-image"
       />
-       <img id='btMM' src='../IMG/MMbt.png' alt='Botella MariaMaria' />
+       <img id='btMMCard' src='../IMG/cardBot.png' alt='Botella MariaMaria' loading='lazy' />
       </div>
          <p className='perfume-gen'>{perfume.genero}</p>
+     
          <h3 className="perfume-name">{perfume.nombre}</h3>
   
       {/* El botón "Ver más" es un Link que nos lleva a la página de detalle */}

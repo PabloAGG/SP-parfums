@@ -18,10 +18,27 @@
 
 .perfume-list {
   display: flex;
-  flex-wrap: wrap;
-  overflow-x: hidden; /* Evita el desbordamiento horizontal */
+  flex-wrap: nowrap;
+  flex-direction: row;
+  overflow-x: scroll; /* Evita el desbordamiento horizontal */
   justify-content: center; /* O flex-start si prefieres alineado a la izquierda */
+  gap: 10px; /* Espacio entre tarjetas */
+  margin-left: 5px;
+  scrollbar-width: none; /* Para navegadores Firefox */
+   scroll-behavior: smooth;
+    -ms-overflow-style: none; /* IE and Edge */
+padding-left: 200px;
 }
 
+.perfume-list::-webkit-scrollbar {
+  display: none; 
+}
 
+.perfume-list-seccion {
+position: relative; /* Para posicionar los botones de navegación */
+    max-width: 95vw;
+    padding: 0px;
+
+    margin: 0 auto;
+}
 

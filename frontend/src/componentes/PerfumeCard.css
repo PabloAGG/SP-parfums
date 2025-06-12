@@ -3,6 +3,7 @@
   border-radius: 8px;
   padding: 30px 16px;
   text-align: center;
+      flex-shrink: 0;
   width: 200px;
   margin: 10px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -25,6 +26,7 @@
     transform: translateY(-5px);
 }
 .perfume-img-container {
+  display: flex;
   position: relative;
 }
 .perfume-image {
@@ -34,11 +36,14 @@
   margin-bottom: 12px;
 border-radius: 5px;
 }
-#btMM{
+#btMMCard{
   position: absolute;
-  top: 3px; 
-  right: 50px;
-
+  justify-self: flex-start;
+  align-self: start;
+  top: 40%; 
+  left: 60%;
+  height: 100px;
+  max-width: 75px;
   border-radius: 8px;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
 }
