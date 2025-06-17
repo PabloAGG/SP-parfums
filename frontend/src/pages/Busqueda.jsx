@@ -55,11 +55,13 @@ return (
         {Object.keys(perfumesPorMarca).map(marca => (
                 <div key={marca} className="marca-section">
                     <h2 className="marca-title">{marca}</h2>
+                    <div className="perfume-list-seccion">
                     <div className="perfume-list">
                        
                         {perfumesPorMarca[marca].map(perfume => (
                             <PerfumeCard key={perfume.idperfume} perfume={perfume} />
                         ))}
+                    </div>
                     </div>
                 </div>
             ))}

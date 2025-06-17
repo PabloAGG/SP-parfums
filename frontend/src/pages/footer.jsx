@@ -6,6 +6,7 @@ const footer = () => {
   return (
     <footer className="footer">
       <div className="footer-content">
+        <p>Los nombres e imagenes de los perfumes originales son marcas registradas y solamente son usadas como referencia</p>
         <p>Todos los perfumes aqui mostrados son contratipos.</p>
         <p>Cada perfume tiene un tamaño de 60ml c/u</p>
         {/* <nav className="footer-nav">

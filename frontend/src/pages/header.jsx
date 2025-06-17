@@ -20,8 +20,8 @@ const navigate = useNavigate();
     if (e.key === 'Enter') {
       // Redirige a la página de búsqueda con query param
       navigate(`/busqueda/${encodeURIComponent(searchTerm)}`);
+      
       toggleSearchbar(); // Cierra la barra de búsqueda
-      setSearchTerm(''); // Limpia el término de búsqueda
     }
   };
   return (

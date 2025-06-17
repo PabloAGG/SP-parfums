@@ -6,7 +6,8 @@ import Loading from '../componentes/loading'; // Componente de carga
 const Dashboard = () => {
     // Estado para guardar los perfumes agrupados por marca
     const [perfumesPorMarca, setPerfumesPorMarca] = useState({});
-const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [marcasOrdenadas, setMarcasOrdenadas] = useState([]);
     useEffect(() => {
         // Función para obtener los datos desde tu API
         const fetchPerfumes = async () => {
@@ -19,7 +20,7 @@ const [loading, setLoading] = useState(true);
                 // Agrupamos los perfumes por marca
                 const agrupados = data.reduce((acc, perfume) => {
                     // La API ya nos da el nombre de la marca como 'marcap'
-                    const marca = perfume.marcap; 
+                    const marca = perfume.marcap;
                     if (!acc[marca]) {
                         acc[marca] = [];
                     }
@@ -27,8 +28,11 @@ const [loading, setLoading] = useState(true);
                     return acc;
                 }, {});
 
-                setPerfumesPorMarca(agrupados);
-                setLoading(false);
+               
+    const marcasOrdenadas = Object.keys(agrupados).sort();
+    setPerfumesPorMarca(agrupados);
+    setMarcasOrdenadas(marcasOrdenadas);
+    setLoading(false);
 
             } catch (error) {
                 console.error("Error al obtener los perfumes:", error);
@@ -39,30 +43,31 @@ const [loading, setLoading] = useState(true);
     }, []); // El array vacío asegura que esto se ejecute solo una vez
 
     if (loading) return <Loading />; // Muestra el componente de carga mientras se obtienen los datos
-    if (Object.keys(perfumesPorMarca).length === 0) {
+    if (Object.keys(marcasOrdenadas).length === 0) {
         return <p>No hay perfumes disponibles.</p>;
     }
     return (
         <div className="dashboard">
             <h1>Perfumes disponibles</h1>
-            {/* Object.keys() nos da un array con los nombres de las marcas (ej. ['DIOR', 'CHANEL']).
-              Luego iteramos sobre cada nombre de marca.
-            */}
-            {Object.keys(perfumesPorMarca).map(marca => (
+
+            {/* 1. Itera directamente sobre el arreglo de nombres de marcas */}
+            {marcasOrdenadas.map(marca => (
                 <div key={marca} className="marca-section">
                     <h2 className="marca-title">{marca}</h2>
                     <div className="perfume-list-seccion">
-                    <div className="perfume-list">
-                       
-                        {perfumesPorMarca[marca].map(perfume => (
-                            <PerfumeCard key={perfume.idperfume} perfume={perfume} />
-                        ))}
-                    </div>
+                        <div className="perfume-list">
+
+                            {/* 2. Usa el objeto 'perfumesPorMarca' para obtener la lista de perfumes */}
+                            {perfumesPorMarca[marca].map(perfume => (
+                                <PerfumeCard key={perfume.idperfume} perfume={perfume} />
+                            ))}
+                        </div>
                     </div>
                 </div>
             ))}
         </div>
     );
+
 };
 
 export default Dashboard;
