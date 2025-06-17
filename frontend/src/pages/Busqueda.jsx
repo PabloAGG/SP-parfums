@@ -3,7 +3,7 @@ import PerfumeCard from '../componentes/PerfumeCard';
 import './Dashboard.css'; // Archivo para estilos del dashboard
 import Loading from '../componentes/loading'; // Componente de carga
 import { useParams } from 'react-router-dom'; // Hook para leer los parámetros de la URL
-
+import API_URL from '../config/api';
 
 const Busqueda = () => {
   const [resultados, setResultados] = useState([]);
@@ -16,7 +16,7 @@ const [perfumesPorMarca, setPerfumesPorMarca] = useState({}); // Estado para gua
 
 
       setLoading(true); // ✅ Lo movemos dentro del useEffect
-      fetch(`http://localhost:3001/api/busqueda?q=${encodeURIComponent(q)}`)
+      fetch(`${API_URL}/api/busqueda?q=${encodeURIComponent(q)}`)
           .then(res => {
       if (!res.ok) throw new Error('Error de red o servidor');
       return res.json();

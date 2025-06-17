@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PerfumeCard from '../componentes/PerfumeCard';
 import './Dashboard.css'; // Archivo para estilos del dashboard
 import Loading from '../componentes/loading'; // Componente de carga
+import API_URL from '../config/api'; // Asegúrate de que esta ruta sea correcta
 const Dashboard = () => {
     // Estado para guardar los perfumes agrupados por marca
     const [perfumesPorMarca, setPerfumesPorMarca] = useState({});
@@ -14,7 +15,7 @@ const Dashboard = () => {
             try {
                 // La URL de tu backend
                 setLoading(true);
-                const response = await fetch('http://localhost:3001/api/perfumes');
+                const response = await fetch(`${API_URL}/api/perfumes`);
                 const data = await response.json();
 
                 // Agrupamos los perfumes por marca

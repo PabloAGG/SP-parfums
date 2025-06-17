@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'; // Hook para leer los parámetros 
 import './PerfumeDetail.css';
 
 import Loading from '../componentes/loading'; // Componente de carga
+import API_URL from '../config/api';
 const PerfumeDetail = () => {
     // useParams nos da un objeto con los parámetros, en este caso { id: '...' }
     const { id } = useParams(); 
@@ -20,7 +21,7 @@ const capitalizarPrimeraPalabraExacto = (texto) => {
         const fetchPerfume = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`http://localhost:3001/api/perfume/${id}`);
+                const response = await fetch(`${API_URL}/api/perfume/${id}`);
                 if (!response.ok) {
                     throw new Error('Perfume no encontrado');
                 }
