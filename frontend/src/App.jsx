@@ -3,7 +3,7 @@ import Dashboard from './pages/Dashboard';
 import PerfumeDetail from './pages/PerfumeDetail';
 import Busqueda from './pages/Busqueda';
 import './App.css';
-
+import Catalogo from './pages/Catalogo';
 import Header from './pages/header';
 import Footer from './pages/footer';
 
@@ -21,6 +21,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
            <Route path="/busqueda/:q" element={<Busqueda />} />
           <Route path="/perfume/:id" element={<PerfumeDetail />} />
+           <Route path="/catalogo" element={<Catalogo />} /> 
 
          
         </Routes>

@@ -41,9 +41,9 @@ const navigate = useNavigate();
 
 
       <nav className={`nav-links ${menuAbierto ? 'activo' : ''}`}>
-        <Link to="/" className="nav-link" onClick={() => setMenuAbierto(false)}>Inicio</Link>
-        <Link to="/categorias" className="nav-link" onClick={() => setMenuAbierto(false)}>Categorías</Link>
-        <Link to="/pedidos" className="nav-link" onClick={() => setMenuAbierto(false)}>Mis pedidos</Link>
+        <Link to="/" className="nav-link" onClick={() => setMenuAbierto(false)}><i className="fa-solid fa-spray-can-sparkles"></i> Inicio</Link>
+        <Link to="/catalogo" className="nav-link" onClick={() => setMenuAbierto(false)}><i className="fa-solid fa-layer-group"></i> Catalogo</Link>
+     
       </nav>
       
       
