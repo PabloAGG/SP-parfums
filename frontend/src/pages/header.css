@@ -93,6 +93,9 @@
   margin: 5px 0;
   transition: all 0.3s ease-in-out;
 }
+.hamburger:hover span {
+  background-color: #d4af37;
+}
 
 .search-container {
   display: flex;

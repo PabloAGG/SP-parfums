@@ -6,6 +6,29 @@ import './PerfumeCard.css'; // Crearemos este archivo para los estilos
 // Este componente recibe un objeto 'perfume' con sus datos
 const PerfumeCard = ({ perfume }) => {
       const navigate = useNavigate();
+const AgregarPedido= (e) => {
+        e.stopPropagation();
+        
+        const pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
+        const perfumeExistenteIndex = pedidos.findIndex(p => p.idperfume === perfume.idperfume);
+
+    if (perfumeExistenteIndex > -1) {
+        // Si existe, aumentamos la cantidad
+        pedidos[perfumeExistenteIndex].cantidad += 1;
+        alert(`Se agregó otra unidad de "${perfume.nombre}" a tu pedido.`);
+    } else {
+        // Si no existe, lo agregamos como un nuevo pedido
+        pedidos.push({
+            idperfume: perfume.idperfume,
+            cantidad: 1,
+            fecha: new Date().toISOString()
+        });
+        alert(`Perfume "${perfume.nombre}" agregado a tu pedido.`);
+    }
+
+    // Guardamos el array actualizado en localStorage
+    localStorage.setItem('pedidos', JSON.stringify(pedidos));
+      }
 
   const irADetalle = () => {
     navigate(`/perfume/${perfume.idperfume}`);
@@ -34,17 +57,7 @@ const PerfumeCard = ({ perfume }) => {
       <div className="perfume-card-buttons">
     <button
       className="perfume-add-button"
-      onClick={(e) => {
-        e.stopPropagation();
-        const pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
-        pedidos.push({
-          idperfume: perfume.idperfume,
-          cantidad: 1,
-          fecha: new Date().toISOString()
-        });
-        localStorage.setItem('pedidos', JSON.stringify(pedidos));
-        alert(`Perfume "${perfume.nombre}" agregado a pedido.`);
-      }}
+      onClick={AgregarPedido}
     >
       Agregar a pedido
     </button>

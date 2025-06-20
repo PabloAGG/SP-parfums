@@ -266,18 +266,64 @@ app.get('/api/pedidos/mis-pedidos', async (req, res) => {
     }
 });
 
+
 app.post('/api/pedidos', async (req, res) => {
-    const { usuario_id, idperfume, cantidad } = req.body; // Asegúrate de que el cuerpo de la solicitud tenga estos campos
+ 
+    const productosDelPedido = req.body;
+    
+    if (!Array.isArray(productosDelPedido) || productosDelPedido.length === 0) {
+        return res.status(400).json({ error: 'El cuerpo de la solicitud debe ser un array de productos y no puede estar vacío.' });
+    }
+
+    const client = await pool.connect(); // Obtenemos un cliente de la pool de conexiones
+
     try {
-        console.log("Petición recibida para crear un nuevo pedido");
-        const { rows } = await pool.query(
-            'INSERT INTO pedidos (idusuario, idperfume, cantidad, estado) VALUES ($1, $2, $3,"pendiente") RETURNING *',
-            [usuario_id, idperfume, cantidad]
-        );
-        res.status(201).json(rows[0]);
+        // 2. Iniciamos una TRANSACCIÓN.
+        await client.query('BEGIN');
+
+        console.log("Procesando un nuevo pedido con ID temporal:", productosDelPedido[0].idpedidotemp);
+        console.log("Productos del pedido:", productosDelPedido);
+
+
+        const filasInsertadas = [];
+
+        // 3. Usamos un bucle for...of para poder usar await dentro.
+        for (const producto of productosDelPedido) {
+            const { idperfume, cantidad, fecha, idpedidotemp } = producto;
+            
+            // Validamos que cada producto tenga los campos necesarios
+            if (!idperfume || !cantidad || !fecha || !idpedidotemp) {
+                throw new Error('Cada producto debe contener idperfume, cantidad, fecha y idpedidotemp.');
+            }
+
+            const query = `
+                INSERT INTO pedido (idperfume, idusuario, cantidad, fecha, "idPedidoTemp") 
+                VALUES ($1, NULL, $2, $3, $4) 
+                RETURNING *`; // RETURNING * nos devuelve la fila completa que se insertó
+
+            const values = [idperfume, cantidad, fecha, idpedidotemp];
+            
+            const { rows } = await client.query(query, values);
+            
+            // 4. Guardamos cada fila insertada para devolverla al final.
+            filasInsertadas.push(rows[0]);
+        }
+
+        // 5. Si el bucle se completó sin errores, confirmamos la transacción.
+        await client.query('COMMIT');
+        
+        // 6. Enviamos de vuelta el array con todos los productos insertados.
+        console.log("Pedido insertado correctamente en la BD.");
+        res.status(201).json(filasInsertadas);
+
     } catch (error) {
-        console.error('Error al crear el pedido:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        // 7. Si ocurre CUALQUIER error, revertimos la transacción.
+        await client.query('ROLLBACK');
+        console.error('Error al procesar el pedido, se hizo ROLLBACK:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor al procesar el pedido.', details: error.message });
+    } finally {
+        // 8. Liberamos el cliente para que pueda ser usado por otra petición.
+        client.release();
     }
 });
 
@@ -391,10 +437,14 @@ app.post('/api/pedidos/temporales', async (req, res) => {
         if (ids.length === 0) return res.json({ pedidos: [] });
 
         const { rows } = await pool.query(
-            `SELECT * FROM perfume WHERE idperfume = ANY($1)`,
+            `SELECT p.*, m.nombre AS marcap
+            FROM perfume AS p
+            INNER JOIN marcas AS m ON p.marca = m.idmarca
+            WHERE p.activo = true AND idperfume = ANY($1)`,
             [ids]
         );
         // Unir info de pedido con info de perfume
+         
         const pedidosEnriquecidos = pedidos.map(p => ({
             ...p,
             perfume: rows.find(r => r.idperfume === p.idperfume)
