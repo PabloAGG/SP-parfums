@@ -30,11 +30,28 @@ const PerfumeCard = ({ perfume }) => {
          <p className='perfume-gen'>{perfume.genero}</p>
      
          <h3 className="perfume-name">{perfume.nombre}</h3>
-  
-      {/* El botón "Ver más" es un Link que nos lleva a la página de detalle */}
-      <Link to={irADetalle} className="perfume-button">
-        Ver más
-      </Link>
+         
+      <div className="perfume-card-buttons">
+    <button
+      className="perfume-add-button"
+      onClick={(e) => {
+        e.stopPropagation();
+        const pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
+        pedidos.push({
+          idperfume: perfume.idperfume,
+          cantidad: 1,
+          fecha: new Date().toISOString()
+        });
+        localStorage.setItem('pedidos', JSON.stringify(pedidos));
+        alert(`Perfume "${perfume.nombre}" agregado a pedido.`);
+      }}
+    >
+      Agregar a pedido
+    </button>
+    <Link to={irADetalle} className="perfume-button">
+      Ver más
+    </Link>
+  </div>
     </div>
   );
 };

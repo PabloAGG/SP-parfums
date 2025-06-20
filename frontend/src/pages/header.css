@@ -1,32 +1,28 @@
 .header {
   display: flex;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: space-between; /* Esto separa logo y user-menu */
   align-items: center;
+  width: 100%;
   background-color: #eaeaea;
   color: #1a1a1a;
   min-height: 60px;
-  /* Altura mínima, puede crecer si el contenido se envuelve */
   height: auto;
-  /* Altura automática */
-  top: 0;
-  left: 0;
   padding: 10px 15px;
-  /* Padding horizontal */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   flex-wrap: wrap;
   z-index: 1000;
-  /* Asegura que el header esté por encima de otros elementos */
   position: sticky;
   top: 0;
-  /* Fija el header en la parte superior */
   transition: transform 0.3s ease-in-out;
-  /* Transición suave para el efecto de ocultar/mostrar */
 }
 
-
 .logo {
-  height: 70px;
+    height: 70px;
+  /* Elimina margin: 0 auto; y position: absolute; */
+  margin: 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
 .nav-links {
@@ -159,6 +155,49 @@
   transform: rotate(360deg);
   /* Rotar el botón al activar la búsqueda */
   color: #ccc;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  /* Quita margin-left: auto y margin-right: 0 */
+}
+
+.user-link {
+  color: #1a1a1a;
+  font-size: 1.2em;
+  text-decoration: none;
+  background: none;
+  padding: 0 4px;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s;
+  position: relative;
+}
+
+.user-link .fa-shopping-cart {
+  font-size: 1.2em;
+  transition: color 0.3s;
+}
+
+.user-link:hover .fa-shopping-cart {
+  color: #d4af37;
+}
+
+/* Opcional: badge para cantidad de pedidos temporales */
+.user-link .cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #d4af37;
+  color: #fff;
+  font-size: 0.7em;
+  border-radius: 50%;
+  padding: 1px 5px;
+  font-weight: bold;
+  pointer-events: none;
 }
 
 /* Estilos para pantallas pequeñas (móviles) */

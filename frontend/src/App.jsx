@@ -6,6 +6,7 @@ import './App.css';
 import Catalogo from './pages/Catalogo';
 import Header from './pages/header';
 import Footer from './pages/footer';
+import PedidosTemporales from './pages/pedidos';
 
 function App() {
  
@@ -22,7 +23,7 @@ function App() {
            <Route path="/busqueda/:q" element={<Busqueda />} />
           <Route path="/perfume/:id" element={<PerfumeDetail />} />
            <Route path="/catalogo" element={<Catalogo />} /> 
-
+           <Route path="/pedidos" element={<PedidosTemporales />} />
          
         </Routes>
       </div>

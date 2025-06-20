@@ -380,6 +380,31 @@ app.put('/api/pedidos/admin/confirmar/:id', async (req, res) => {
     }
 });
 
+app.post('/api/pedidos/temporales', async (req, res) => {
+    const { pedidos } = req.body;
+    if (!Array.isArray(pedidos)) {
+        return res.status(400).json({ error: 'Formato de pedidos inválido' });
+    }
+    try {
+        // Obtener detalles de cada perfume
+        const ids = pedidos.map(p => p.idperfume);
+        if (ids.length === 0) return res.json({ pedidos: [] });
+
+        const { rows } = await pool.query(
+            `SELECT * FROM perfume WHERE idperfume = ANY($1)`,
+            [ids]
+        );
+        // Unir info de pedido con info de perfume
+        const pedidosEnriquecidos = pedidos.map(p => ({
+            ...p,
+            perfume: rows.find(r => r.idperfume === p.idperfume)
+        }));
+        res.json({ pedidos: pedidosEnriquecidos });
+    } catch (error) {
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
 
 // 5. Iniciar el servidor
 app.listen(port, () => {

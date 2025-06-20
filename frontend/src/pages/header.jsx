@@ -56,10 +56,7 @@ const navigate = useNavigate();
 <div className="user-menu">
         {/* <Link to="/" className="user-link">
           <i className="fas fa-user"></i>
-        </Link>
-        <Link to="/" className="user-link">
-          <i className="fas fa-shopping-cart"></i>  
-        </Link> */}
+        </Link>*/}
         <div className={`search-container ${searchbarVisible ? 'active' : ''}`}>
         <input
           type="text"
@@ -73,6 +70,9 @@ const navigate = useNavigate();
           <i className="fas fa-search"></i>
         </button>
         </div>
+         <Link to="/pedidos" className="user-link">
+          <i className="fas fa-shopping-cart"></i>  
+        </Link>
       </div>
     </header>
   );
