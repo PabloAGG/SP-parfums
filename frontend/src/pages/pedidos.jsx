@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import API_URL from '../config/api';
 import Loading from '../componentes/loading';
 import './PerfumeDetail.css';
-import logo from '../../IMG/Logo.png'; //
+import logo from '/IMG/Logo.png'; //
 // CAMBIO 1: Importar jsPDF y la función autoTable de forma explícita.
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';

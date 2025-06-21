@@ -44,7 +44,7 @@ const AgregarPedido= (e) => {
       <div className='perfume-img-container'>
       <img 
         // Asumimos que tienes una columna 'imagen_url' o similar en tu tabla de perfumes
-        src={`../IMG/${perfume.genero}/${perfume.marcap}/${perfume.img_path}` || 'https://via.placeholder.com/150'} 
+        src={`/IMG/${perfume.genero}/${perfume.marcap}/${perfume.img_path}` || 'https://via.placeholder.com/150'} 
         alt={`Perfume ${perfume.nombre}`} 
         className="perfume-image"
       />
