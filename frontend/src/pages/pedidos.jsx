@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import API_URL from '../config/api';
 import Loading from '../componentes/loading';
 import './PerfumeDetail.css';
-import logo from '/IMG/Logo.png'; //
+ //
 // CAMBIO 1: Importar jsPDF y la función autoTable de forma explícita.
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -122,7 +122,7 @@ const PedidosTemporales = () => {
         const doc = new jsPDF();
         doc.setFontSize(20);
         doc.text(` Pedido ${idpedidotemp} - Sillage`, 10, 20);
-        doc.addImage(logo, 'PNG', 150, 10, 30, 30); // Ajusta la ruta de la imagen según tu estructura
+        doc.addImage('/IMG/Logo.png', 'PNG', 150, 10, 30, 30); // Ajusta la ruta de la imagen según tu estructura
         doc.setFontSize(12);
         doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 10, 30);
 
