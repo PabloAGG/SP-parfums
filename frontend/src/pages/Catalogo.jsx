@@ -56,9 +56,9 @@ const Catalogo = () => {
             const mobile = window.innerWidth < 768;
             setIsMobile(mobile);
             // Si pasamos a desktop, nos aseguramos que la sidebar esté abierta
-            if (!mobile) {
+
                 setIsSidebarOpen(true);
-            }
+            
         };
 
         window.addEventListener('resize', handleResize);

@@ -15,7 +15,18 @@ const pool = new Pool({
         rejectUnauthorized: false
     }
 });
-
+pool.connect((err, client, release) => {
+  if (err) {
+    return console.error('¡ERROR FATAL AL CONECTAR CON LA BASE DE DATOS!', err.stack);
+  }
+  client.query('SELECT NOW()', (err, result) => {
+    release(); // Es importante liberar el cliente después de usarlo
+    if (err) {
+      return console.error('Error ejecutando la consulta de prueba', err.stack);
+    }
+    console.log('¡Conexión a la base de datos verificada exitosamente! Hora de la DB:', result.rows[0].now);
+  });
+});
 app.use(cors());
 app.use(express.json());
 
