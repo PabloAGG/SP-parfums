@@ -85,6 +85,9 @@ const Catalogo = () => {
 
     const handleGeneroClick = (genero) => {
         setGeneroSeleccionado(prevGenero => (prevGenero === genero ? null : genero));
+        if (isMobile) {
+            setIsSidebarOpen(false); // Cierra la sidebar en móvil al seleccionar género
+        }
     };
     
     const getPerfumesFiltrados = () => {
@@ -92,6 +95,7 @@ const Catalogo = () => {
         let perfumes = perfumesPorMarca[marcaSeleccionada];
         if (generoSeleccionado) {
             perfumes = perfumes.filter(p => p.genero === generoSeleccionado);
+         
         }
         return perfumes;
     };

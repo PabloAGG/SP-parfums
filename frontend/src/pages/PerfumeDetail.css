@@ -118,6 +118,16 @@
     font-weight: bold;
 }
 
+.perfume-add-button {
+  background-color: #d4af37;
+  color: #1a1a1a;
+}
+
+.perfume-add-button:hover {
+  background-color: #1a1a1a;
+  color: #fffbe6;
+}
+
 
 @media (max-width: 768px) {
     .perfume-detail {

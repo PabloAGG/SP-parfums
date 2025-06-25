@@ -49,6 +49,7 @@ const Dashboard = () => {
     }
     return (
         <div className="dashboard">
+         
             <h1>Perfumes disponibles</h1>
 
             {/* 1. Itera directamente sobre el arreglo de nombres de marcas */}

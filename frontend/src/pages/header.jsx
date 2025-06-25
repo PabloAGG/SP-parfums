@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { Link } from 'react-router-dom';
 import './header.css'; // Asegúrate de tener este archivo CSS
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,10 @@ const navigate = useNavigate();
 
   const toggleMenu = () => {
     setMenuAbierto(!menuAbierto);
+    if (!menuAbierto) {
+      setSearchbarVisible(false); // Cierra la barra de búsqueda al abrir el menú
+    setSearchTerm(''); // Limpia el campo de búsqueda
+    }
   };
   const toggleSearchbar = () => {
     setSearchbarVisible(!searchbarVisible);
@@ -74,7 +78,22 @@ fetch(`${API_URL}/api/busqueda?q=${encodeURIComponent(value)}`)
     }
   };
 
+const suggestionsTimeout = useRef(null);
 
+
+  useEffect(() => {
+    // Si hay sugerencias, inicia el temporizador
+    if (suggestions.length > 0) {
+      if (suggestionsTimeout.current) clearTimeout(suggestionsTimeout.current);
+      suggestionsTimeout.current = setTimeout(() => {
+        setSuggestions([]);
+      }, 2000); // 2 segundos
+    }
+    // Limpia el timeout si el componente se desmonta o suggestions cambia
+    return () => {
+      if (suggestionsTimeout.current) clearTimeout(suggestionsTimeout.current);
+    };
+  }, [suggestions]);
 
   
   const searchbarComponent = (

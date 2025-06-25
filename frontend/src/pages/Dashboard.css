@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap');
 .dashboard {
-  padding: 20px;
+  width: 100%;
+  padding: 0 15px;
   text-align: center;
 }
 .dashboard h1{
@@ -42,3 +43,9 @@ position: relative; /* Para posicionar los botones de navegación */
     z-index: 1;
 }
 
+@media (max-width: 768px) {
+  .marca-title {
+    font-size: 1.5em;
+  }
+  
+}

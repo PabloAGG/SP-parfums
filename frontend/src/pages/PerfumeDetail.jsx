@@ -17,6 +17,31 @@ const capitalizarPrimeraPalabraExacto = (texto) => {
   palabras[0] = palabras[0].charAt(0).toUpperCase() + palabras[0].slice(1);
   return palabras.join(' ');
 };
+
+const AgregarPedido= (e) => {
+        e.stopPropagation();
+        
+        const pedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
+        const perfumeExistenteIndex = pedidos.findIndex(p => p.idperfume === perfume.idperfume);
+
+    if (perfumeExistenteIndex > -1) {
+        // Si existe, aumentamos la cantidad
+        pedidos[perfumeExistenteIndex].cantidad += 1;
+        alert(`Se agregó otra unidad de "${perfume.nombre}" a tu pedido.`);
+    } else {
+        // Si no existe, lo agregamos como un nuevo pedido
+        pedidos.push({
+            idperfume: perfume.idperfume,
+            cantidad: 1,
+            fecha: new Date().toISOString()
+        });
+        alert(`Perfume "${perfume.nombre}" agregado a tu pedido.`);
+    }
+
+    // Guardamos el array actualizado en localStorage
+    localStorage.setItem('pedidos', JSON.stringify(pedidos));
+      }
+
     useEffect(() => {
         const fetchPerfume = async () => {
             try {
@@ -58,7 +83,12 @@ const capitalizarPrimeraPalabraExacto = (texto) => {
                     <p><strong>Género:</strong> {perfume.genero}</p>
                     <p><strong>Clima ideal:</strong> {perfume.clima}</p>
                 </div>
-                {/* Aquí podrías agregar un botón de "Añadir al pedido" en el futuro */}
+                <button
+      className="perfume-add-button"
+      onClick={AgregarPedido}
+    >
+      Agregar a pedido
+    </button>
             </div>
         </div>
     );
