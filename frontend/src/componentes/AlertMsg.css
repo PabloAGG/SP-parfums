@@ -1,0 +1,24 @@
+.error-message {
+  color: rgb(255, 0, 0);
+  font-size: 0.9em;
+  margin-top: 5px;
+    text-align: center;
+    background-color: rgb(246, 205, 205);
+    padding: 20px;
+    z-index: 1000;
+position: sticky;
+  width: 90%;
+  border-radius:8px ;
+}
+.success-message {
+  color: rgb(0, 128, 0);
+  font-size: 0.9em;
+  margin-top: 5px;
+    text-align: center;
+    background-color: rgb(205, 246, 205);
+    padding: 20px;
+    z-index: 1000;
+    position: sticky;
+  width: 90%;
+  border-radius:8px ;
+  }

@@ -7,6 +7,8 @@ import Catalogo from './pages/Catalogo';
 import Header from './pages/header';
 import Footer from './pages/footer';
 import PedidosTemporales from './pages/pedidos';
+import Login from './pages/Login';
+import Registro from './pages/Registro';
 
 function App() {
  
@@ -24,6 +26,8 @@ function App() {
           <Route path="/perfume/:id" element={<PerfumeDetail />} />
            <Route path="/catalogo" element={<Catalogo />} /> 
            <Route path="/pedidos" element={<PedidosTemporales />} />
+           <Route path='/login' element={<Login/>} />
+          <Route path='/registro' element={<Registro/>} />
          
         </Routes>
       </div>

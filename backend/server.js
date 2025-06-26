@@ -4,7 +4,8 @@ const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
+ const jwt = require('jsonwebtoken');
+const saltRounds = 10;
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -196,14 +197,13 @@ app.delete('/api/perfume/:id', async (req, res) => {
 
 // api registro y login
 app.post('/api/auth/register', async (req, res) => {
-    const bcrypt = require('bcrypt');
-const saltRounds = 10;
+
     const { nombre, apellidos,telefono,contraseña} = req.body;
     const hashedPassword = await bcrypt.hash(contraseña, saltRounds);
     try {
         console.log("Petición recibida para registrar un nuevo usuario");
         const { rows } = await pool.query(
-            'INSERT INTO usuarios (nombre, apellidos, telefono,contraseña) VALUES ($1, $2, $3) RETURNING *',
+            'INSERT INTO usuarios (nombre, apellidos, telefono,contraseña) VALUES ($1, $2, $3,$4) RETURNING *',
             [nombre, apellidos,telefono,hashedPassword]
         );
         res.status(201).json(rows[0]);
@@ -218,7 +218,7 @@ app.post('/api/auth/login', async (req, res) => {
     try {
         // 1. Buscamos al usuario solo por su teléfono (que debe ser único)
         const { rows } = await pool.query(
-            'SELECT * FROM usuarios WHERE telefono = $1',
+            'SELECT * FROM usuarios WHERE telefono = $1 ',
             [telefono]
         );
 

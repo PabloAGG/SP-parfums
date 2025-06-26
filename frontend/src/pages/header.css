@@ -18,10 +18,9 @@
 
 .logo {
     height: 70px;
-  /* Elimina margin: 0 auto; y position: absolute; */
   margin: 0;
   display: flex;
-  align-items: center;
+  align-self: center;
   cursor: pointer;
 }
 
@@ -164,7 +163,7 @@
 .user-menu {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 10px;
   /* Quita margin-left: auto y margin-right: 0 */
 }
 
@@ -180,7 +179,10 @@
   transition: color 0.3s;
   position: relative;
 }
-
+.user-link:hover {
+  color: #d4af37;
+  /* Cambia el color al pasar el mouse */
+}
 .user-link .fa-shopping-cart {
   font-size: 1.2em;
   transition: color 0.3s;
