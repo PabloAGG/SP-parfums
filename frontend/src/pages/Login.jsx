@@ -14,6 +14,7 @@ const [error, setError] = useState(null);
     const [passwordError, setPasswordError] = useState('');
 const location = useLocation();
 const successMessage = location.state?.success || null;
+const errorMessage = location.state?.error || null;
 useEffect(() => {
         if (successMessage) {
             const timer = setTimeout(() => {
@@ -22,6 +23,14 @@ useEffect(() => {
             return () => clearTimeout(timer); 
         }
     }, [successMessage]);
+    useEffect(() => {
+        if (errorMessage) {
+           const timer = setTimeout(() => {
+                navigate('/login'); // Redirige a la página de inicio de sesión después de mostrar
+            }, 2000); // Espera 2 segundos antes de redirigir
+            return () => clearTimeout(timer); ;
+        }
+    }, [errorMessage]);
 
  useEffect(() => {
         if (error) {
@@ -115,6 +124,9 @@ return (
 
     {successMessage && (
         <AlertMsg message={successMessage} type="success" />
+    )}
+    {errorMessage && (
+        <AlertMsg message={errorMessage} type="error" />
     )}
          <img className='logo-sesion' src="/IMG/logo.png" alt="" />
             <form onSubmit={handleSubmit}>

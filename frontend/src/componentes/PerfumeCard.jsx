@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; // Importamos useNavigate para navegar programáticamente
 import './PerfumeCard.css'; // Crearemos este archivo para los estilos
-
+import AlertMsg from './AlertMsg'; // Asegúrate de que la ruta sea correcta
 // Este componente recibe un objeto 'perfume' con sus datos
 const PerfumeCard = ({ perfume }) => {
       const navigate = useNavigate();

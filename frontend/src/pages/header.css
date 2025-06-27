@@ -163,7 +163,8 @@
 .user-menu {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  padding: 0 10px;
   /* Quita margin-left: auto y margin-right: 0 */
 }
 

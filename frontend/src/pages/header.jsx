@@ -164,7 +164,7 @@ const Header = () => {
 
         {!isMobile && searchbarComponent}
         {userSesion ? (
-          <Link to="/" className="user-link">
+          <Link to="/perfil" className="user-link">
             <i className="fas fa-user"></i>
           </Link>
         ) : (

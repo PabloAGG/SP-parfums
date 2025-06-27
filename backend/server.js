@@ -34,7 +34,10 @@ app.use(express.json());
 // --- MIDDLEWARE DE AUTENTICACIÓN ---
 const verificarToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    if (!authHeader) return res.status(403).json({ error: 'Token requerido' });
+    if (!authHeader){ 
+        
+        return res.status(403).json({ error: 'Token requerido' })
+    };
     
     const token = authHeader.split(' ')[1];
     if (!token) return res.status(403).json({ error: 'Token malformado' });
@@ -261,7 +264,51 @@ app.post('/api/auth/login', async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
+app.get('/api/auth/perfil', verificarToken, async (req, res) => {
+    try {
+        console.log(`Petición recibida para obtener el perfil del usuario con ID: ${req.user.userId}`);
+        const { rows } = await pool.query(
+            'SELECT idusuario, nombre, apellidos, telefono FROM usuarios WHERE idusuario = $1',
+            [req.user.userId]
+        );
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Error al obtener el perfil del usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+app.put('/api/auth/perfil', verificarToken, async (req, res) => {
+    const { nombre, apellido, telefono, contraseña } = req.body;
+    try {
+        console.log(`Petición recibida para actualizar el perfil del usuario con ID: ${req.user.userId}`);
+        
+        // Si se proporciona una nueva contraseña, la hasheamos
+        let hashedPassword = null;
+        if (contraseña) {
+            hashedPassword = await bcrypt.hash(contraseña, saltRounds);
+        }
 
+        const query = `
+            UPDATE usuarios 
+            SET nombre = $1, apellidos = $2, telefono = $3, contraseña = COALESCE($4, contraseña)
+            WHERE idusuario = $5 
+            RETURNING idusuario, nombre, apellidos, telefono
+        `;
+        const values = [nombre, apellido, telefono, hashedPassword, req.user.userId];
+        
+        const { rows } = await pool.query(query, values);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Error al actualizar el perfil del usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 app.get('/api/pedidos/mis-pedidos', async (req, res) => {
     const { userId } = req.query; // Asumiendo que el ID del usuario se pasa como parámetro de consulta
     try {
