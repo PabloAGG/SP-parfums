@@ -67,7 +67,7 @@ border-radius: 5px;
   margin-top: 12px;
 }
 
-.perfume-add-button,
+
 .perfume-button {
   display: inline-block;
   padding: 8px 16px;
@@ -81,24 +81,39 @@ border-radius: 5px;
   text-decoration: none;
 }
 
-.perfume-add-button {
+.addBtn {
   background-color: #d4af37;
   color: #1a1a1a;
 }
 
-.perfume-add-button:hover {
+.addBtn:hover {
   background-color: #1a1a1a;
   color: #fffbe6;
 }
 
-.perfume-button {
+.detailBtn {
   background-color: #1a1a1a;
   color: white;
 }
 
-.perfume-button:hover {
+.detailBtn:hover {
   background-color: #d4af37;
   color: #ddd;
+}
+
+.bajaBtn {
+  background-color: #b72525;
+  color: white;
+}
+.bajaBtn:hover {
+  background-color: #b10c0c;
+}
+.editBtn {
+  background-color: #168e46;
+  color: white;
+}
+.editBtn:hover {
+  background-color: #164428;
 }
 
 

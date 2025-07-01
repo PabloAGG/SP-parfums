@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import './header.css'; // Asegúrate de tener este archivo CSS
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../config/api'; // Importa la URL de la API
+import { jwtDecode } from 'jwt-decode';
 const Header = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [searchbarVisible, setSearchbarVisible] = useState(false);
@@ -12,7 +13,7 @@ const Header = () => {
   const [suggestions, setSuggestions] = useState([]);
   const userSesion = localStorage.getItem('token'); // Verifica si hay un token de sesión
   const menuRef = useRef(null);
-
+const user = userSesion ? jwtDecode(userSesion):null; 
   useEffect(() => {
     if (!menuAbierto) return;
 
@@ -146,6 +147,11 @@ const Header = () => {
         {isMobile && menuAbierto && searchbarComponent}
         <Link to="/" className="nav-link" onClick={() => setMenuAbierto(false)}><i className="fa-solid fa-spray-can-sparkles"></i> Inicio</Link>
         <Link to="/catalogo" className="nav-link" onClick={() => setMenuAbierto(false)}><i className="fa-solid fa-layer-group"></i> Catalogo</Link>
+        {userSesion && user.admin && (  
+          <Link to="/admin/catalogo" className="nav-link" onClick={() => setMenuAbierto(false)}>
+ <i className="fas fa-cogs"></i> Administar Catálogo
+</Link>
+)}
         {userSesion && (
           <Link onClick={handleLogout} className="nav-link">
             <i className="fas fa-sign-out-alt"></i> Cerrar sesión

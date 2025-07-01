@@ -133,22 +133,16 @@ app.get('/api/perfume/genero/:genero', async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
-app.get('/api/perfume/marca/:marca', async (req, res) => {
-    const { marca } = req.params;
+app.get('/api/marcas', async (req, res) => {
     try {
-        console.log(`Petición recibida para obtener perfumes de la marca: ${marca}`);
-        const query = `
-            SELECT p.*, m.nombre AS marcaP
-            FROM perfume AS p
-            INNER JOIN marcas AS m ON p.marca = m.idmarca
-            WHERE m.nombre = $1 AND p.activo = true
-        `;
-        const { rows } = await pool.query(query, [marca]);
-        res.json(rows); // Se devuelve un array vacío si no hay resultados, no un error 404
+        console.log("Petición recibida para obtener todas las marcas");
+        const { rows } = await pool.query('SELECT * FROM marcas');
+        res.json(rows);
     } catch (error) {
-        console.error('Error al obtener perfumes por marca:', error);
+        console.error('Error al obtener marcas:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
+   
 });
 app.post('/api/perfume', async (req, res) => {
     const { nombre, marca, top, descripcion,clima,genero } = req.body;

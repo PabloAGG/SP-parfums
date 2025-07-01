@@ -1,25 +1,38 @@
 // frontend/src/pages/Catalogo.jsx
 
 import React, { useState, useEffect, useRef } from 'react'; // 1. Importa useRef
+import { useLocation,useNavigate} from 'react-router-dom';
 import API_URL from '../config/api';
 import PerfumeCard from '../componentes/PerfumeCard';
 import Loading from '../componentes/loading';
 import './Catalogo.css';
+import AlertMsg from '../componentes/AlertMsg';
 
-const Catalogo = () => {
+const Catalogo = ({isAdmin=false}) => {
     const [perfumesPorMarca, setPerfumesPorMarca] = useState({});
     const [marcasOrdenadas, setMarcasOrdenadas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [marcaSeleccionada, setMarcaSeleccionada] = useState(null);
     const [generoSeleccionado, setGeneroSeleccionado] = useState(null);
-
+const location = useLocation();
+    const successMessage = location.state?.success || null;
     // --- MEJORA 1: Estado para sidebar en móvil ---
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile); // Abierto en desktop, cerrado en móvil por defecto
 
     // --- MEJORA 2: Referencia para el contenedor principal ---
     const mainContentRef = useRef(null);
-
+    const navigate = useNavigate(); 
+    
+    // Importa useNavigate para redirigir después de mostrar el mensaje
+useEffect(() => {
+        if (successMessage) {
+            const timer = setTimeout(() => {
+                navigate('/admin/catalogo'); // Redirige a la página de inicio de sesión después de mostrar
+            }, 2000); // Espera 2 segundos antes de redirigir
+            return () => clearTimeout(timer); 
+        }
+    }, [successMessage]);
     useEffect(() => {
         const fetchPerfumes = async () => {
             try {
@@ -104,7 +117,14 @@ const Catalogo = () => {
 
     return (
         <div className="catalogo-container">
-            {/* --- MEJORA 1: Botón para mostrar/ocultar sidebar en móvil --- */}
+            {successMessage && (
+                <AlertMsg
+                    message={successMessage}
+                    type= "success"
+                    isConfirm= {false}
+                    show= {true}
+                />
+            )}
             {isMobile && (
                 <button 
                     className="sidebar-toggle-button" 
@@ -141,11 +161,12 @@ button>
 
             {/* --- MEJORA 2: Se añade la referencia aquí --- */}
             <main className="catalogo-main" ref={mainContentRef}>
+                 {isAdmin && <h1><i className="fas fa-cogs"></i> - Catálogo</h1>}
                 {marcaSeleccionada ? (
                     perfumesAMostrar.length > 0 ? (
                         <div className="perfume-grid">
                             {perfumesAMostrar.map(perfume => (
-                                <PerfumeCard key={perfume.idperfume} perfume={perfume} />
+                                <PerfumeCard key={perfume.idperfume} perfume={perfume} isAdmin={isAdmin} />
                             ))}
                         </div>
                     ) : (

@@ -1,9 +1,11 @@
 import { Routes, Route } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react'; 
 import './App.css';
-import Header from './pages/header';
-import Footer from './pages/footer';
+import Header from './componentes/header';
+import Footer from './componentes/footer';
 import Loading from './componentes/loading';
+import AdminRoute from './pages/AdminRoute'; // Importa la ruta protegida
+
 
 //imports dinamicos para lazy loading de componentes
 const Dashboard = lazy(()=> import('./pages/Dashboard'));
@@ -14,8 +16,9 @@ const PedidosTemporales = lazy(()=> import ('./pages/pedidos'));
 const Login = lazy(()=> import ('./pages/Login'));
 const Registro = lazy(()=>import ('./pages/Registro'));
 const Perfil = lazy(()=>import ('./pages/Perfil'));
+const PerfumeEdit = lazy(()=>import ('./pages/PerfumeEdit'));
 function App() {
- 
+  
   return (
     <>
       {/* Aquí ira un Navbar que se vera en todas las páginas */}
@@ -32,10 +35,20 @@ function App() {
            <Route path="/busqueda/:q" element={<Busqueda />} />
           <Route path="/perfume/:id" element={<PerfumeDetail />} />
            <Route path="/catalogo" element={<Catalogo />} /> 
+           <Route path='/admin/catalogo' element={
+            <AdminRoute>
+              <Catalogo isAdmin={true} />
+            </AdminRoute>
+           }/>
            <Route path="/pedidos" element={<PedidosTemporales />} />
            <Route path='/login' element={<Login/>} />
           <Route path='/registro' element={<Registro/>} />
          <Route path='/perfil' element={<Perfil/>} />
+          <Route path='/admin/editar/:id' element={
+              <PerfumeEdit />
+          }/>
+          {/* Ruta por defecto para manejar 404 */}
+         <Route path='*' element={<h1>404 - Página no encontrada</h1>} />
         </Routes>
         </Suspense>
       </div>

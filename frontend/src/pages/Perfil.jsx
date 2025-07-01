@@ -66,9 +66,10 @@ const Perfil = () => {
         return () => clearTimeout(timer);   
         }
     }, [error]);
+
     useEffect(() => {
         if (success) {
-        const timer = setTimeout(() => setError(null), 2000);
+        const timer = setTimeout(() => setSuccess(null), 2000);
         return () => clearTimeout(timer);   
         }
     }, [success]);
