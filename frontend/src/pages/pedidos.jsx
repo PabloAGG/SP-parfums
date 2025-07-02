@@ -122,7 +122,7 @@ const PedidosTemporales = () => {
         const doc = new jsPDF();
         doc.setFontSize(20);
         doc.text(` Pedido ${idpedidotemp} - Sillage`, 10, 20);
-        doc.addImage('/IMG/Logo.png', 'PNG', 150, 10, 30, 30); // Ajusta la ruta de la imagen según tu estructura
+        doc.addImage('/IMG/logo.png', 'PNG', 150, 10, 30, 30); // Ajusta la ruta de la imagen según tu estructura
         doc.setFontSize(12);
         doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 10, 30);
 
