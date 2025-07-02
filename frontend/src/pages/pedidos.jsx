@@ -171,7 +171,7 @@ const PedidosTemporales = () => {
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
         doc.text(`Total del Pedido: $${totalPedido.toFixed(2)} MXN`, 10, finalY + 15);
-        doc.text(`Para separar tu pedido: $${(PRECIO_POR_PERFUME/2).toFixed(2)} MXN`, 10, finalY + 22);
+        doc.text(`Para separar tu pedido: $${totalPedido.toFixed(2)/2} MXN`, 10, finalY + 22);
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         doc.text("Instrucciones de Pago", 10, finalY + 35);
